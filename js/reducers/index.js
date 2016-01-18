@@ -1,13 +1,14 @@
 import {combineReducers} from 'redux';
+import {users} from './users';
 
-function appState(state = {user: null}, action) {
-    return state;
+
+function appState(state = {username: null}, action) {
+    switch (action.type) {
+    case 'SET_USER':
+        return {...state, username: action.username};
+    default:
+        return state;
+    }
 }
 
-function users() {
-
-}
-
-const rootReducer = combineReducers({appState, users});
-
-export default rootReducer;
+export default combineReducers({appState, users});
