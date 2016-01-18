@@ -1,13 +1,13 @@
 # react-data-access
-An example of how to handle the data layer in react (with Github's API)
+An example of how you might handle data access with react+redux (with Github's API)
 
 ## The parts
 
-* DataAccess middleware
-* DataRequired component
+* Data access middleware
+* `DataRequired` component
 * Cache reducer
-* FETCH, DATA_RECEIVED, and ERROR actions
-* getAndEnsureData - used in connect
+* `FETCH`, `DATA_RECEIVED`, and `ERROR` actions
+* `getAndEnsureData` - used in connect
 
 ## Goals
 
@@ -22,7 +22,7 @@ An example of how to handle the data layer in react (with Github's API)
 * User shouldn't have to know about `getAndEnsureData`
 * `DataRequired`'s children are instantiated when `DataRequired` is (should wrap a component like `connect`)
 * `Loader` & `Error` components are defined within `DataRequired`
-* DataAccess middleware knows about action creators
+* Data access middleware knows about action creators
 * Components have to know about the cache structure (e.g. `users.result`)
 
 
