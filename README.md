@@ -1,4 +1,4 @@
-# react-github-example
+# react-data-access
 An example of how to handle the data layer in react (with Github's API)
 
 ## The parts

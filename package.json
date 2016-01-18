@@ -1,7 +1,7 @@
 {
-  "name": "react-scaffold",
-  "version": "0.0.2",
-  "description": "Some basic scaffolding to get started with react",
+  "name": "react-data-access",
+  "version": "0.0.1",
+  "description": "An example of how to do data access management with react and redux",
   "main": "js/main.js",
   "scripts": {
     "test": "mocha --compilers js:babel-core/register --recursive",
