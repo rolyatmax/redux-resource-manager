@@ -4,8 +4,9 @@ import applyResourceManager from './lib/redux_resource_helpers';
 import appState from './reducers/app_state';
 import resources from './resources';
 
-const rootReducer = combineReducers({appState});
-const createResourceManagerStore = applyResourceManager(resources)(createStore);
-const createStoreWithMiddleware = applyMiddleware(createLogger())(createResourceManagerStore);
+let wrappedCreateStore = createStore;
+wrappedCreateStore = applyMiddleware(createLogger())(wrappedCreateStore);
+wrappedCreateStore = applyResourceManager(resources)(wrappedCreateStore);
 
-export default createStoreWithMiddleware(rootReducer);
+const rootReducer = combineReducers({appState});
+export default wrappedCreateStore(rootReducer);

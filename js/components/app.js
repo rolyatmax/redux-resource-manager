@@ -3,6 +3,7 @@ import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import store from '../store';
 import {setUser} from '../actions';
+import Loader from './loader';
 import requiresData from './data_required';
 
 
@@ -18,8 +19,8 @@ const UserInfo = ({username, avatarURL, name, company, location, followers}) => 
     </div>
 );
 
-const App = ({appState, user, actions}) => {
-    const WrappedUserInfo = requiresData([user], UserInfo);
+const App = ({users, requests, actions}) => {
+    // const WrappedUserInfo = requiresData([], UserInfo);
     function onKeyPress(e) {
         if (e.which === 13) {
             actions.setUser(e.currentTarget.value.trim());
@@ -31,20 +32,25 @@ const App = ({appState, user, actions}) => {
         <div>
             <h1>Github User Info</h1>
             <input onKeyPress={onKeyPress} type="text" />
+            <Loader requests={requests} />
             <hr />
-            <WrappedUserInfo
-                username={appState.username}
-                avatarURL={user && user.result && user.result.avatar_url}
-                {...(user ? user.result : {})}
-            />
+            {users.map(user =>
+                <UserInfo
+                    key={user.login}
+                    username={user.result && user.result.login}
+                    avatarURL={user.result && user.result.avatar_url}
+                    {...(user.result || {})}
+                />
+            )}
         </div>
     );
 };
 
 export default connect(
     function mapStateToProps({appState}) {
-        let user = appState.username ? store.get.users(appState) : null;
-        return {appState, user};
+        const users = appState.usernames.map(username => store.get.users({username}));
+        const requests = users;
+        return {appState, users, requests};
     },
     function mapDispatchToProps(dispatch) {
         return {
