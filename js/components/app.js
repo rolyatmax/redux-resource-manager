@@ -1,20 +1,10 @@
 import React from 'react';
+import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import store from '../store';
 import {setUser} from '../actions';
-import {bindResourceToStore} from '../lib/redux_resource_helpers';
 import requiresData from './data_required';
 
-
-const get = bindResourceToStore(store);
-
-
-function onKeyPress(e) {
-    if (e.which === 13) {
-        store.dispatch(setUser(e.currentTarget.value.trim()));
-        e.currentTarget.value = '';
-    }
-}
 
 const UserInfo = ({username, avatarURL, name, company, location, followers}) => (
     <div>
@@ -28,8 +18,15 @@ const UserInfo = ({username, avatarURL, name, company, location, followers}) => 
     </div>
 );
 
-const App = ({appState, user}) => {
+const App = ({appState, user, actions}) => {
     const WrappedUserInfo = requiresData([user], UserInfo);
+    function onKeyPress(e) {
+        if (e.which === 13) {
+            actions.setUser(e.currentTarget.value.trim());
+            e.currentTarget.value = '';
+        }
+    }
+
     return (
         <div>
             <h1>Github User Info</h1>
@@ -44,7 +41,14 @@ const App = ({appState, user}) => {
     );
 };
 
-export default connect(function mapStateToProps({appState}) {
-    let user = appState.username ? get.users(appState) : null;
-    return {appState, user};
-})(App);
+export default connect(
+    function mapStateToProps({appState}) {
+        let user = appState.username ? store.get.users(appState) : null;
+        return {appState, user};
+    },
+    function mapDispatchToProps(dispatch) {
+        return {
+            actions: bindActionCreators({setUser}, dispatch)
+        };
+    }
+)(App);

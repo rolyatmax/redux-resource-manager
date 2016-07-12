@@ -1,9 +1,58 @@
+import {combineReducers} from 'redux';
 import {fetchJSON, mapObject, identity} from './utils';
-import resources from '../resources';
-import createResourceReducer from './create_resource_reducer';
 
 
-const resourceConfigs = applyDefaults(resources);
+const RESOURCE_FETCH = 'RESOURCE_FETCH';
+const RESOURCE_RECEIVED = 'RESOURCE_RECEIVED';
+const RESOURCE_ERROR = 'RESOURCE_ERROR';
+
+const userState = '__userState';
+const resourceManagerState = '__resourceManagerState';
+
+export default function applyResourceManager(resources) {
+    const resourceConfigs = applyDefaults(resources);
+    return (createStore) => (reducer, preloadedState, enhancer) => {
+        const reducers = {
+            [userState]: reducer,
+            [resourceManagerState]: createResourceManagerReducer(resourceConfigs)
+        };
+        reducer = combineReducers(reducers);
+        const store = createStore(reducer, preloadedState, enhancer);
+        const get = mapObject(resourceConfigs, (config) => createResourceGetter(config, store));
+        const wrappedStore = {
+            ...store,
+            get,
+            getState: function wrappedGetState() {
+                const state = store.getState();
+                return {
+                    ...state[userState],
+                    [resourceManagerState]: state[resourceManagerState]
+                };
+            }
+        };
+        return wrappedStore;
+    };
+}
+
+function createResourceManagerReducer(resourceConfigs) {
+    return combineReducers(mapObject(resourceConfigs, (config) => {
+        return createResourceReducer(config);
+    }));
+}
+
+function createResourceGetter(resourceConfig, store) {
+    const {createCacheKey, resourceName} = resourceConfig;
+    const {getState, dispatch} = store;
+    return (opts) => {
+        const state = getState()[resourceManagerState][resourceName];
+        const key = createCacheKey(opts);
+        if (!state[key] || Date.now() > state[key].expiration) {
+            fetchResource(resourceConfig, opts, dispatch);
+        }
+
+        return state[key] || {status: 'pending'};
+    };
+};
 
 function applyDefaults(definitions) {
     return mapObject(definitions, (config, name) => ({
@@ -13,20 +62,6 @@ function applyDefaults(definitions) {
         parseResponse: config.parseResponse || identity
     }));
 }
-
-function createResourceGetter(resourceConfig, store) {
-    const {createCacheKey, resourceName} = resourceConfig;
-    const {getState, dispatch} = store;
-    return (opts) => {
-        const state = getState()[resourceName];
-        const key = createCacheKey(opts);
-        if (!state[key] || Date.now() > state[key].expiration) {
-            fetchResource(resourceConfig, opts, dispatch);
-        }
-
-        return state[key] || {status: 'pending'};
-    };
-};
 
 function fetchResource(resourceConfig, opts, dispatch) {
     opts = {...opts};
@@ -45,34 +80,57 @@ function fetchResource(resourceConfig, opts, dispatch) {
     dispatch(fetch({resourceName, request}));
 };
 
-//////// exports
-
-export function bindResourceToStore(store) {
-    return mapObject(resourceConfigs, (config) => createResourceGetter(config, store));
-}
-
-export function addResourceReducers(reducers) {
-    return mapObject(resourceConfigs, (config, name) => {
-        if (reducers[name]) {
-            throw new Error(`Reducer "${name}" already exists!`);
-        }
-        return createResourceReducer(config);
-    }, {...reducers});
-}
-
 /////// actions
 
 function fetch({resourceName, request}) {
-    const type = 'FETCH';
+    const type = RESOURCE_FETCH;
     return {type, resourceName, request};
 }
 
 function dataReceived({resourceName, request, response}) {
-    const type = 'DATA_RECEIVED';
+    const type = RESOURCE_RECEIVED;
     return {type, resourceName, request, response};
 }
 
 function error({resourceName, request}) {
-    const type = 'ERROR';
+    const type = RESOURCE_ERROR;
     return {type, resourceName, request};
+}
+
+////////// createResourceReducer
+
+function createResourceReducer(resourceConfig) {
+    const {resourceName, ttl, createCacheKey, parseResponse} = resourceConfig;
+    return function resourceReducer(state = {}, action) {
+        if (action.resourceName !== resourceName) {
+            return state;
+        }
+
+        switch (action.type) {
+        case RESOURCE_FETCH:
+            return {
+                ...state,
+                [createCacheKey(action.request.opts)]: {status: 'pending'}
+            };
+        case RESOURCE_RECEIVED:
+            return {
+                ...state,
+                [createCacheKey(action.request.opts)]: {
+                    result: parseResponse(action.response),
+                    status: 'fulfilled',
+                    expiration: Date.now() + ttl
+                }
+            };
+        case RESOURCE_ERROR:
+            return {
+                ...state,
+                [createCacheKey(action.request.opts)]: {
+                    status: 'rejected',
+                    retry: action.request.retry
+                }
+            };
+        default:
+            return state;
+        }
+    };
 }
