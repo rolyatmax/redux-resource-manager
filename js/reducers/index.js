@@ -1,8 +1,9 @@
 import {combineReducers} from 'redux';
-import {users} from './users';
+import {addResourceReducers} from '../lib/redux_resource_helpers';
 
+const getDefaultState = () => ({username: null});
 
-function appState(state = {username: null}, action) {
+function appState(state = getDefaultState(), action) {
     switch (action.type) {
     case 'SET_USER':
         return {...state, username: action.username};
@@ -11,4 +12,6 @@ function appState(state = {username: null}, action) {
     }
 }
 
-export default combineReducers({appState, users});
+let reducers = {appState};
+reducers = addResourceReducers(reducers);
+export default combineReducers(reducers);

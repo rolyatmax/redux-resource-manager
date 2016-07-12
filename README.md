@@ -3,26 +3,21 @@ An example of how you might handle data access with react+redux (with Github's A
 
 ## The parts
 
-* Data access middleware
-* `DataRequired` component
-* Cache reducer
-* `FETCH`, `DATA_RECEIVED`, and `ERROR` actions
-* `getAndEnsureData` - used in connect
+* resources definitions
+* `requiresData` wrapper
+* `get` functions used for fetching data from the data layer - used in connect
 
 ## Goals
 
 * Colocate data requirements with a component
 * Provide data caching
-* Declaratively define data access
+* Declaratively define external resources
 * Provide easy way to manage showing `Loader` and `Error` components (and retry ajax requests)
 
 ## FIXMEs
 
 * `getAndEnsureData` used within render cycle
-* User shouldn't have to know about `getAndEnsureData`
-* `DataRequired`'s children are instantiated when `DataRequired` is (should wrap a component like `connect`)
 * `Loader` & `Error` components are defined within `DataRequired`
-* Data access middleware knows about action creators
 * Components have to know about the cache structure (e.g. `users.result`)
 
 
@@ -30,9 +25,9 @@ An example of how you might handle data access with react+redux (with Github's A
 
 ```js
 ChildComponent = dataRequired(
-    function getRequestProps({appState}) {
+    function getRequestProps({appState, users}) {
         return {
-            'users': {username: appState.username}
+            'user': [users, {username: appState.username}]
         };
     },
     {

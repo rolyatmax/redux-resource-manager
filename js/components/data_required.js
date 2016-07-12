@@ -5,23 +5,23 @@ const Loader = () => (<span>Loading...</span>);
 const Error = () => (<span>Error loading data.</span>);
 
 
-function DataRequired({requirements, children}) {
-    for (let i = 0; i < requirements.length; i++) {
-        let store = requirements[i];
-        if (store.status === 'rejected') {
-            return <Error retry={store.retry} />;
+export default function requiresData(requirements, Component) {
+    function DataRequired(props) {
+        for (let i = 0; i < requirements.length; i++) {
+            let resource = requirements[i];
+            if (!resource) {
+                return <noscript />;
+            }
+            if (resource.status === 'rejected') {
+                return <Error retry={resource.retry} />;
+            }
+            if (resource.status === 'pending') {
+                return <Loader />;
+            }
         }
-        if (store.status === 'pending') {
-            return <Loader />;
-        }
+
+        return <Component {...props} />;
     }
 
-    return <div>{children}</div>;
+    return DataRequired;
 }
-
-DataRequired.propTypes = {
-    requirements: React.PropTypes.array.isRequired,
-    children: React.PropTypes.node.isRequired
-};
-
-export default DataRequired;
