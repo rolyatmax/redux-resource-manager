@@ -1,4 +1,5 @@
-export function setUser(username) {
+export function setUser(usernames) {
     const type = 'SET_USER';
-    return {type, username};
+    usernames = usernames.split(',').map(user => user.trim()).filter(val => val);
+    return {type, usernames};
 }
