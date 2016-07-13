@@ -5,7 +5,7 @@ import appState from './reducers/app_state';
 import resources from './resources';
 
 let wrappedCreateStore = createStore;
-wrappedCreateStore = applyMiddleware(createLogger())(wrappedCreateStore);
+wrappedCreateStore = applyMiddleware(createLogger({collapsed: true}))(wrappedCreateStore);
 wrappedCreateStore = applyResourceManager(resources)(wrappedCreateStore);
 
 const rootReducer = combineReducers({appState});
