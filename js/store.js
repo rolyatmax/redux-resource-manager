@@ -1,6 +1,6 @@
 import {createStore, applyMiddleware, combineReducers} from 'redux';
 import createLogger from 'redux-logger';
-import applyResourceManager from './lib/redux_resource_helpers';
+import applyResourceManager from './redux_resource_manager';
 import appState from './reducers/app_state';
 import resources from './resources';
 

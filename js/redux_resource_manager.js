@@ -1,6 +1,6 @@
 import {combineReducers} from 'redux';
 import {debounce} from 'underscore'; // TODO: implement this in utils
-import {fetchJSON, mapObject, identity} from './utils';
+import {fetchJSON, mapObject, identity} from './lib/utils';
 
 
 const RESOURCE_FETCH = 'RESOURCE_FETCH';
