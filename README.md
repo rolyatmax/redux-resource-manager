@@ -143,8 +143,11 @@ const resources = {
 
 ## Scripts
 
-* `npm run develop` - runs webpack dev server on `:8080` and opens browser
+* `npm run build` - transpiles `src` with babel, outputs to `lib`
+* `npm run watch` - watches `src` and transpiles with babel on changes
 * `npm run test` - runs mocha tests
-* `npm run build` - creates webpack bundle
-* `npm run serve` - runs SimpleHTTPServer on `:36418` and opens browser
 * `npm run lint` - runs flow and eslint
+
+* `npm run develop:demo` - runs webpack dev server on `:8080` for dev on demoand opens browser
+* `npm run build:demo` - creates webpack bundle for demo
+* `npm run serve:demo` - serves demo on `:36418` and opens browser (make sure you've `npm run build:demo` first)

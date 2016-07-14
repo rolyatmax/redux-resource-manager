@@ -2,21 +2,24 @@
   "name": "redux-resource-manager",
   "version": "0.1.0",
   "description": "A Redux wrapper that helps manage external resources in a client-side application.",
-  "main": "js/main.js",
+  "main": "lib/index.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/rolyatmax/redux-resource-manager.git"
   },
   "scripts": {
-    "test": "mocha --compilers js:babel-core/register --recursive",
-    "build": "webpack",
-    "serve": "open http://localhost:36418 && python -m SimpleHTTPServer 36418",
+    "build": "babel src -d lib",
+    "watch": "npm run build -- -w",
+    "test": "babel test.js | node | faucet",
     "lint": "flow && eslint js",
-    "develop": "open http://localhost:8080 && webpack-dev-server --hot --inline"
+    "build:demo": "webpack",
+    "develop:demo": "open http://localhost:8080 && webpack-dev-server --hot --inline",
+    "serve:demo": "cd demo && open http://localhost:36418 && python -m SimpleHTTPServer 36418"
   },
   "author": "Taylor Baldwin <taylorbaldwin@gmail.com> (https://tbaldw.in)",
   "license": "ISC",
   "devDependencies": {
+    "babel-cli": "^6.10.1",
     "babel-core": "^6.10.4",
     "babel-eslint": "^6.1.2",
     "babel-loader": "^6.2.4",
@@ -28,9 +31,9 @@
     "eslint-config-airbnb-base": "^4.0.0",
     "eslint-plugin-import": "^1.10.3",
     "eslint-plugin-react": "^5.2.2",
-    "expect": "^1.20.2",
+    "faucet": "0.0.1",
     "flow-bin": "^0.29.0",
-    "mocha": "^2.5.3",
+    "tape": "^4.6.0",
     "webpack": "^1.13.1",
     "webpack-dev-server": "^1.14.1"
   },
