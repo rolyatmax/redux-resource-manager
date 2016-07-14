@@ -8,14 +8,25 @@
     "url": "git+https://github.com/rolyatmax/redux-resource-manager.git"
   },
   "scripts": {
+    "clean": "rimraf lib demo/bundle*",
+    "check:src": "npm run lint && npm run test",
     "build": "babel src -d lib",
     "watch": "npm run build -- -w",
     "test": "babel test.js | node | faucet",
-    "lint": "flow && eslint js",
+    "lint": "eslint .",
     "build:demo": "webpack",
     "develop:demo": "open http://localhost:8080 && webpack-dev-server --hot --inline",
-    "serve:demo": "cd demo && open http://localhost:36418 && python -m SimpleHTTPServer 36418"
+    "serve:demo": "cd demo && open http://localhost:36418 && python -m SimpleHTTPServer 36418",
+    "prepublish": "npm run clean && npm run check:src && npm run build"
   },
+  "files": [
+    "lib",
+    "src"
+  ],
+  "bugs": {
+    "url": "https://github.com/rolyatmax/redux-resource-manager/issues"
+  },
+  "homepage": "http://redux.js.org",
   "author": "Taylor Baldwin <taylorbaldwin@gmail.com> (https://tbaldw.in)",
   "license": "MIT",
   "devDependencies": {
@@ -33,6 +44,7 @@
     "eslint-plugin-react": "^5.2.2",
     "faucet": "0.0.1",
     "flow-bin": "^0.29.0",
+    "rimraf": "^2.5.3",
     "tape": "^4.6.0",
     "webpack": "^1.13.1",
     "webpack-dev-server": "^1.14.1"
