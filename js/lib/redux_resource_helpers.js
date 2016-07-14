@@ -59,9 +59,16 @@ function applyDefaults(definitions) {
     return mapObject(definitions, (config, name) => ({
         ...config,
         resourceName: name,
-        createCacheKey: config.createCacheKey || config.buildUrl,
+        createCacheKey: config.createCacheKey || createDefaultCacheKey(config),
         parseResponse: config.parseResponse || identity
     }));
+}
+
+function createDefaultCacheKey(resourceConfig) {
+    return function defaultCacheKey(opts) {
+        const {url} = getUrlAndFetchOptions(resourceConfig, opts);
+        return url;
+    };
 }
 
 function getUrlAndFetchOptions(resourceConfig, opts) {
@@ -161,7 +168,7 @@ function createResourceReducer(resourceConfig) {
             if (buildBatches) {
                 joinedRequestResponse = action.request.map(({opts, retry}) => ({
                     request: {opts, retry},
-                    response: parseResponse(action.response, opts)
+                    response: parseResponse(opts, action.response)
                 }));
             } else {
                 joinedRequestResponse = [{
