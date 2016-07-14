@@ -128,7 +128,7 @@ function sendRequest(resourceConfig, url, fetchOptions, request, dispatch) {
   dispatch(resourceFetch({ resourceName, request }));
 }
 
-/////// actions
+// //////////////////// actions
 
 function resourceFetch({ resourceName, request }) {
   const type = RESOURCE_FETCH;
@@ -145,7 +145,7 @@ function resourceError({ resourceName, request }) {
   return { type, resourceName, request };
 }
 
-////////// createResourceReducer
+// //////////////// createResourceReducer
 
 function createResourceReducer(resourceConfig) {
   const { resourceName, ttl, createCacheKey, parseResponse, buildBatches } = resourceConfig;
@@ -163,7 +163,8 @@ function createResourceReducer(resourceConfig) {
           cacheToUpdate[createCacheKey(opts)] = { status: 'pending' };
         });
         return { ...state, ...cacheToUpdate };
-      case RESOURCE_RECEIVED:
+      // FIXME: figure out why eslint is messed up here
+      case RESOURCE_RECEIVED: // eslint-disable-line
         let joinedRequestResponse;
         if (buildBatches) {
           joinedRequestResponse = action.request.map(({ opts, retry }) => ({

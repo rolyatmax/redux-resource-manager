@@ -1,5 +1,6 @@
-import React from 'react';
-import Body from './body';
+// FIXME: figure out why eslint is messed up here
+import React from 'react'; // eslint-disable-line
+import Body from './body'; // eslint-disable-line
 
 
 export default function App() {

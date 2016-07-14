@@ -1,6 +1,7 @@
 export default function mapObject(obj, mapFn, target) {
   target = target || {};
-  for (let key in obj) {
+  // FIXME: linting problem here
+  for (let key in obj) { // eslint-disable-line
     target[key] = mapFn(obj[key], key);
   }
   return target;

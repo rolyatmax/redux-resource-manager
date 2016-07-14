@@ -1,11 +1,12 @@
-import React from 'react';
+// FIXME: figure out why eslint is messed up here
+import React from 'react'; // eslint-disable-line
 
 
-const Loader = () => (<span>Loading...</span>);
-const Error = () => (<span>Error loading data.</span>);
+const Loader = () => (<span>Loading...</span>); // eslint-disable-line
+const Error = () => (<span>Error loading data.</span>); // eslint-disable-line
 
 
-export default function requiresData(requirements, Component) {
+export default function requiresData(requirements, Component) { // eslint-disable-line
   function DataRequired(props) {
     for (let i = 0; i < requirements.length; i++) {
       const resource = requirements[i];

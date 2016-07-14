@@ -17,7 +17,7 @@
     "build:demo": "webpack",
     "develop:demo": "open http://localhost:8080 && webpack-dev-server --hot --inline",
     "serve:demo": "cd demo && open http://localhost:36418 && python -m SimpleHTTPServer 36418",
-    "prepublish": "npm run clean && npm run check:src && npm run build"
+    "prepublish": "npm run clean && npm run build && npm run check:src"
   },
   "files": [
     "lib",

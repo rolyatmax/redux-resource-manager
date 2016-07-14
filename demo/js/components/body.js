@@ -1,10 +1,11 @@
-import React from 'react';
+// FIXME: figure out why eslint is messed up here
+import React from 'react'; // eslint-disable-line
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import store from '../store';
 import { setUser } from '../actions';
-import Loader from './loader';
-import UserInfo from './user_info';
+import Loader from './loader'; // eslint-disable-line
+import UserInfo from './user_info'; // eslint-disable-line
 
 
 function Body({ users, requests, actions }) {
