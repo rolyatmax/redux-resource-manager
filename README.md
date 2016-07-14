@@ -1,6 +1,10 @@
 # redux-resource-manager
 A Redux wrapper that helps manage external resources in a client-side application.
 
+[![experimental](http://badges.github.io/stability-badges/dist/experimental.svg)](http://github.com/badges/stability-badges)
+
+[![NPM](https://nodei.co/npm/redux-resource-manager.png)](https://www.npmjs.com/package/redux-resource-manager)
+
 ## Example usage:
 
 First, define some external resources:
@@ -151,3 +155,7 @@ const resources = {
 * `npm run develop:demo` - runs webpack dev server on `:8080` for dev on demoand opens browser
 * `npm run build:demo` - creates webpack bundle for demo
 * `npm run serve:demo` - serves demo on `:36418` and opens browser (make sure you've `npm run build:demo` first)
+
+## License
+
+MIT, see [LICENSE.md](http://github.com/rolyatmax/redux-resource-manager/blob/master/LICENSE.md) for details.
