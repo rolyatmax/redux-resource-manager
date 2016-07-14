@@ -114,7 +114,6 @@ const resources = {
         // For batched requests, the `parseResponse` function is required and has a slightly
         // different job. It is used to iterate over all the requested params in a batch. It is
         // `parseResponse`'s job to pull the relevant data from the batched response for the params.
-
         // NOTE: This API is lacking in some ways (i.e. error handling in batches, pulling out relevant data from // the batched response can be inefficient) and will most likely change. Use at your own risk!
         parseResponse: (params, batchedResponse) => {
             const user = batchedResponse.find(u => u.login === params.username);
