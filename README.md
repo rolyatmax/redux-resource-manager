@@ -143,8 +143,8 @@ const resources = {
 
 ## Scripts
 
+* `npm run develop` - runs webpack dev server on `:8080` and opens browser
 * `npm run test` - runs mocha tests
-* `npm run watch` - runs watchify with sourcemaps
-* `npm run build` - runs browserify, using react's production build
-* `npm run serve` - runs SimpleHTTPServer on `5526` and opens browser
-* `npm run lint` - runs eslint
+* `npm run build` - creates webpack bundle
+* `npm run serve` - runs SimpleHTTPServer on `:36418` and opens browser
+* `npm run lint` - runs flow and eslint
