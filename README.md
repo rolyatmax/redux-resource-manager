@@ -3,32 +3,31 @@ A Redux wrapper that helps manage external resources in a client-side applicatio
 
 ## Example usage:
 
-```js
-// First, define some external resources:
+First, define some external resources:
 
+```js
 const resources = {
     users: {
         buildUrl: (params) => `https://api.github.com/users/${params.username}`,
         ttl: 1000 * 60 * 5 // 5 minutes
     }
 };
+```
 
-// --------------------------------------------
+Second, wrap Redux's `createStore` method with `applyResourceManager` (note: this is similar to the way you wrap `createStore` when setting up Redux middleware):
 
-// Second, wrap Redux's createStore method with applyResourceManager
-// (note: this is similar to the way you wrap createStore when setting up Redux middleware):
-
+```js
 import { createStore } from 'redux';
 import applyResourceManager from 'redux-resource-manager';
 import rootReducer from './reducers';
 
 const wrappedCreateStore = applyResourceManager(resources)(createStore);
 const store = wrappedCreateStore(rootReducer);
+```
 
-// --------------------------------------------
+Third, use `store.get[resourceName]` to fetch your external resources, for example:
 
-// Third, use store.get[resourceName] to fetch your external resources, for example:
-
+```js
 function UserInfo(props) {
     const user = store.get.users({ username: props.username });
 
