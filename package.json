@@ -17,7 +17,7 @@
     "serve:demo": "cd demo && open http://localhost:36418 && python -m SimpleHTTPServer 36418"
   },
   "author": "Taylor Baldwin <taylorbaldwin@gmail.com> (https://tbaldw.in)",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "babel-cli": "^6.10.1",
     "babel-core": "^6.10.4",
