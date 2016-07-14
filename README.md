@@ -1,4 +1,4 @@
-# react-data-access
+# redux-resource-manager
 A Redux wrapper that helps manage external resources in a client-side application.
 
 ## Example usage:
