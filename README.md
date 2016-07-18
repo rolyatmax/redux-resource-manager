@@ -28,7 +28,7 @@ const store = wrappedCreateStore(rootReducer);
 Second, wrap your component with `connectResourceManager` passing in a `mapResourcesToProps` function, for example:
 
 ```js
-const UserInfo = connectResourceManager((props, getResource) => ({
+const UserInfo = connectResourceManager(store)((props, getResource) => ({
   user: getResource.users({ username: props.username })
 }))((props) => {
     const { user } = props;
@@ -140,7 +140,8 @@ const resources = {
 
 ## FIXMEs
 
-* `store.get` used within render cycle (create `connect`-like function that accepts a function the user writes that gets passed the reducer's state and `store.get`)
+* the entire store gets passed to components
+* the store must be explicitly passed to `connectResourceManager`
 * Components have to know about the cache structure (e.g. `users.result`)
 
 ## Scripts
