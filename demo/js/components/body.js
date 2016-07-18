@@ -3,16 +3,20 @@ import React from 'react'; // eslint-disable-line
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import store from '../store';
+import { connectResourceManager } from '../../../src';
 import { setUser } from '../actions';
 import Loader from './loader'; // eslint-disable-line
 import UserInfo from './user_info'; // eslint-disable-line
 
 
-function Body({ users, requests, actions }) {
+const Body = connectResourceManager(store)(({ appState }, getResource) => ({
+  users: appState.usernames.map(username => getResource.users({ username })),
+}))((props) => {
+  const { actions, users, requests } = props;
+
   function onKeyPress(e) {
     if (e.which === 13) {
       actions.setUser(e.currentTarget.value.trim());
-      e.currentTarget.value = '';
     }
   }
 
@@ -31,17 +35,10 @@ function Body({ users, requests, actions }) {
       )}
     </div>
   );
-}
+});
 
-
+// TODO: maybe make this all more opinionated by only letting user create an `appState` reducer??
 export default connect(
-  function mapStateToProps({ appState }) {
-    const users = appState.usernames.map(username => store.get.users({ username }));
-    const requests = users;
-    return { appState, users, requests };
-  },
-  function mapDispatchToProps(dispatch) {
-    const actions = bindActionCreators({ setUser }, dispatch);
-    return { actions };
-  }
+  (state) => state,
+  (dispatch) => ({ actions: bindActionCreators({ setUser }, dispatch) })
 )(Body);
