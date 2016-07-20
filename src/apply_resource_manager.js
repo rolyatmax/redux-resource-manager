@@ -122,8 +122,9 @@ function sendRequest(resourceConfig, url, fetchOptions, request, dispatch) {
   function success(response) {
     dispatch(resourceReceived({ resourceName, request, response }));
   }
-  function fail() {
-    dispatch(resourceError({ resourceName, request }));
+  function fail(error) {
+    console.error(`redux-resource-manager error from ${resourceName}:`, error);
+    dispatch(resourceError({ resourceName, request, error }));
   }
 
   fetchJSON(url, fetchOptions).then(success, fail);
@@ -150,7 +151,9 @@ function resourceError({ resourceName, request }) {
 // //////////////// createResourceReducer
 
 function createResourceReducer(resourceConfig) {
-  const { resourceName, ttl, createCacheKey, parseResponse, buildBatches } = resourceConfig;
+  const {
+    resourceName, ttl, createCacheKey, parseResponse, buildBatches, unbatchResponse,
+  } = resourceConfig;
   return function resourceReducer(state = {}, action) {
     if (action.resourceName !== resourceName) {
       return state;
@@ -165,34 +168,52 @@ function createResourceReducer(resourceConfig) {
           cacheToUpdate[createCacheKey(params)] = { status: 'pending' };
         });
         return { ...state, ...cacheToUpdate };
+
       // FIXME: figure out why eslint is messed up here
       case RESOURCE_RECEIVED: // eslint-disable-line
-        let joinedRequestResponse;
-        if (buildBatches) {
-          joinedRequestResponse = action.request.map(({ params, retry }) => ({
-            request: { params, retry },
-            response: parseResponse(params, action.response),
-          }));
-        } else {
-          joinedRequestResponse = [{
-            request: action.request,
-            response: parseResponse(action.response),
-          }];
+        if (!buildBatches) {
+          cacheToUpdate[createCacheKey(action.request.params)] = {
+            result: parseResponse(action.response),
+            status: 'fulfilled',
+            expiration: Date.now() + ttl,
+          };
+          return { ...state, ...cacheToUpdate };
         }
-        joinedRequestResponse.forEach(({ request, response }) => {
-          cacheToUpdate[createCacheKey(request.params)] = {
-            result: response,
+
+        const batchedParams = action.request.map(({ params }) => params);
+        const { fulfilled, rejected } = unbatchResponse(batchedParams, action.response);
+
+        rejected.forEach(({ params, error }) => {
+          // FIXME: this seems so dangerous - all to avoid letting the user have access to
+          // retry function in the `unbatchResponse` function
+          const { retry } = action.request.find(reqInfo => reqInfo.params === params);
+          if (!retry) throw new Error('Could not map params back to retry function');
+          cacheToUpdate[createCacheKey(params)] = {
+            status: 'rejected',
+            retry: retry,
+            error: error,
+            expiration: Date.now() + ttl,
+          };
+        });
+
+        fulfilled.forEach(({ params, result }) => {
+          cacheToUpdate[createCacheKey(params)] = {
+            result: result,
             status: 'fulfilled',
             expiration: Date.now() + ttl,
           };
         });
+
         return { ...state, ...cacheToUpdate };
+
       case RESOURCE_ERROR:
         paramsList = buildBatches ? action.request : [action.request];
         paramsList.forEach(({ params, retry }) => {
           cacheToUpdate[createCacheKey(params)] = {
             status: 'rejected',
             retry: retry,
+            expiration: Date.now() + ttl,
+            error: 'Fetch error', // bad default message????
           };
         });
         return { ...state, ...cacheToUpdate };

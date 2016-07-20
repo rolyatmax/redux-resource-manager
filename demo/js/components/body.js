@@ -1,7 +1,7 @@
 // FIXME: figure out why eslint is messed up here
 import React from 'react'; // eslint-disable-line
 import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
+import { connect } from 'react-redux'; // eslint-disable-line
 import store from '../store';
 import { connectResourceManager } from '../../../src';
 import { setUser } from '../actions';
@@ -10,7 +10,7 @@ import UserInfo from './user_info'; // eslint-disable-line
 
 
 const Body = connectResourceManager(store)(({ appState }, getResource) => ({
-  users: appState.usernames.map(username => getResource.users({ username })),
+  users: appState.usernames.map(username => getResource.batchedUsers({ username })),
 }))((props) => {
   const { actions, users, requests } = props;
 

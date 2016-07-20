@@ -1,5 +1,5 @@
 import { createStore, applyMiddleware, combineReducers } from 'redux';
-import createLogger from 'redux-logger';
+import createLogger from 'redux-logger'; // eslint-disable-line
 import { applyResourceManager } from '../../src';
 import appState from './reducers/app_state';
 import resources from './resources';

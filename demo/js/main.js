@@ -1,6 +1,6 @@
 // FIXME: figure out why eslint is messed up here
 import React from 'react'; // eslint-disable-line
-import ReactDOM from 'react-dom';
+import ReactDOM from 'react-dom'; // eslint-disable-line
 import { Provider } from 'react-redux'; // eslint-disable-line
 import store from './store';
 import App from './components/app'; // eslint-disable-line

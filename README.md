@@ -99,7 +99,7 @@ const resources = {
         // a 50ms window and should return an array of batches. In this example, we just cut up the
         // requests into batches of 10. Note: you'll probably want to dedupe the list as multiple
         // components might have requested the same resource, depending on the complexity of your app.
-        buildBatches: (requestedResources) {
+        buildBatches: (requestedResources) => {
             const resources = dedupe(requestedResources, params => params.username);
             return resources.map(() => (resources.splice(0, 10)));
         },
@@ -112,14 +112,31 @@ const resources = {
         },
 
 
-        // For batched requests, the `parseResponse` function is required and has a slightly
-        // different job. It is used to iterate over all the requested params in a batch. It is
-        // `parseResponse`'s job to pull the relevant data from the batched response for the params.
-        // NOTE: This API is lacking in some ways (i.e. error handling in batches, pulling out relevant data from // the batched response can be inefficient) and will most likely change. Use at your own risk!
-        parseResponse: (params, batchedResponse) => {
-            const user = batchedResponse.find(u => u.login === params.username);
-            // handle missing user!
-            return user;
+        // For batched requests, the `unbatchResponse` function is required. It is used to map the
+        // requested resources' params to the relevant part of the response.
+        // NOTE: This API is lacking in some ways and will most likely change in the future.
+        // Use at your own risk!
+        unbatchResponse: (batchedParams, batchedResponse) => {
+            const users = {};
+            batchedResponse.forEach(u => users[u.login] = u);
+            const fulfilled = [];
+            const rejected = [];
+
+            batchedParams.forEach(params => {
+              const user = users[params.username];
+              if (!user || typeof user === 'string') {
+                rejected.push({
+                  params,
+                  error: user || `${params.username} not found in response`
+                });
+              } else {
+                fulfilled.push({
+                  params,
+                  result: user
+                });
+              }
+            });
+            return { fulfilled, rejected };
         },
 
         // For batched requests, `createCacheKey` is also required. It receives a requested params object
@@ -143,17 +160,30 @@ const resources = {
 * the entire store gets passed to components
 * the store must be explicitly passed to `connectResourceManager`
 * Components have to know about the cache structure (e.g. `users.result`)
+* Provide sensible default for batching/deduping? For example:
+```js
+{
+  ...,
+  batchSize: 10,
+  dedupeWithField: (params) => params.username,
+}
+```
 
 ## Scripts
 
-* `npm run build` - transpiles `src` with babel, outputs to `lib`
-* `npm run watch` - watches `src` and transpiles with babel on changes
-* `npm run test` - runs mocha tests
-* `npm run lint` - runs flow and eslint
+To develop against the demo:
 
-* `npm run develop:demo` - runs webpack dev server on `:8080` for dev on demoand opens browser
-* `npm run build:demo` - creates webpack bundle for demo
-* `npm run serve:demo` - serves demo on `:36418` and opens browser (make sure you've `npm run build:demo` first)
+```shell
+npm run batching-server
+npm run develop:demo
+```
+
+Also, important:
+
+* `npm run test` - runs mocha tests
+* `npm run lint` - runs eslint
+
+For a list of all the scripts, run `npm run` from this project's root.
 
 ## License
 
