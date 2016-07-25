@@ -53,9 +53,9 @@ function handleRequest(req, res) {
       'Content-Type': 'application/json',
       'Access-Control-Allow-Origin': '*',
     });
-    res.write(JSON.stringify(users.map((u, i) => {
+    res.write(JSON.stringify(users.map((u) => {
       // put in some errors here and there
-      if (i % 3 === 0) return { login: u.login, error: 'no response from Github' };
+      if (Math.random() < 0.5) return { login: u.login, error: 'no response from Github' };
       return u;
     })));
     res.end();

@@ -7,6 +7,7 @@ import { connectResourceManager } from '../../../src';
 import { setUser } from '../actions';
 import Loader from './loader'; // eslint-disable-line
 import UserInfo from './user_info'; // eslint-disable-line
+import HandleErrors from './handle_errors'; // eslint-disable-line
 
 
 const Body = connectResourceManager(store)(({ appState }, getResource) => ({
@@ -24,6 +25,7 @@ const Body = connectResourceManager(store)(({ appState }, getResource) => ({
     <div>
       <input onKeyPress={onKeyPress} type="text" />
       <Loader requests={requests} />
+      <HandleErrors requests={requests} />
       <hr />
       {users.filter(user => user.result).map((user) =>
         <UserInfo
