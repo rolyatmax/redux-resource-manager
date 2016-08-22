@@ -5,6 +5,13 @@ import { Provider } from 'react-redux'; // eslint-disable-line
 import store from './store';
 import App from './components/app'; // eslint-disable-line
 
+
+navigator.serviceWorker.register('worker.js').then((registration) => {
+  console.log('did it!', registration);
+}).catch((err) => {
+  console.log('ServiceWorker registration failed: ', err);
+});
+
 ReactDOM.render(
     <Provider store={store}>
         <App />
