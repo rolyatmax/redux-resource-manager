@@ -117,14 +117,26 @@ const fetchResource = (() => {
   };
 })();
 
+function getTimer() {
+  return Math.round(performance.now());
+}
+
+function getDuration(startTime) {
+  return getTimer() - startTime;
+}
+
 function sendRequest(resourceConfig, url, fetchOptions, request, dispatch) {
   const { resourceName } = resourceConfig;
+  const startTime = getTimer();
+
   function success(response) {
-    dispatch(resourceReceived({ resourceName, request, response }));
+    const duration = getDuration(startTime);
+    dispatch(resourceReceived({ resourceName, request, response, duration }));
   }
   function fail(error) {
+    const duration = getDuration(startTime);
     console.error(`redux-resource-manager error from ${resourceName}:`, error);
-    dispatch(resourceError({ resourceName, request, error }));
+    dispatch(resourceError({ resourceName, request, error, duration }));
   }
 
   fetchJSON(url, fetchOptions).then(success, fail);
@@ -138,14 +150,14 @@ function resourceFetch({ resourceName, request }) {
   return { type, resourceName, request };
 }
 
-function resourceReceived({ resourceName, request, response }) {
+function resourceReceived({ resourceName, request, response, duration }) {
   const type = RESOURCE_RECEIVED;
-  return { type, resourceName, request, response };
+  return { type, resourceName, request, response, duration };
 }
 
-function resourceError({ resourceName, request }) {
+function resourceError({ resourceName, request, duration }) {
   const type = RESOURCE_ERROR;
-  return { type, resourceName, request };
+  return { type, resourceName, request, duration };
 }
 
 // //////////////// createResourceReducer
