@@ -155,9 +155,9 @@ function resourceReceived({ resourceName, request, response, duration }) {
   return { type, resourceName, request, response, duration };
 }
 
-function resourceError({ resourceName, request, duration }) {
+function resourceError({ resourceName, request, error, duration }) {
   const type = RESOURCE_ERROR;
-  return { type, resourceName, request, duration };
+  return { type, resourceName, request, error, duration };
 }
 
 // //////////////// createResourceReducer
