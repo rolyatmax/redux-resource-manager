@@ -181,8 +181,7 @@ function createResourceReducer(resourceConfig) {
         });
         return { ...state, ...cacheToUpdate };
 
-      // FIXME: figure out why eslint is messed up here
-      case RESOURCE_RECEIVED: // eslint-disable-line
+      case RESOURCE_RECEIVED: {
         if (!buildBatches) {
           cacheToUpdate[createCacheKey(action.request.params)] = {
             result: parseResponse(action.response),
@@ -217,7 +216,7 @@ function createResourceReducer(resourceConfig) {
         });
 
         return { ...state, ...cacheToUpdate };
-
+      }
       case RESOURCE_ERROR:
         paramsList = buildBatches ? action.request : [action.request];
         paramsList.forEach(({ params, retry }) => {
