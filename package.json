@@ -1,6 +1,6 @@
 {
   "name": "redux-resource-manager",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "A Redux wrapper that helps manage external resources in a client-side application.",
   "main": "lib/index.js",
   "repository": {
