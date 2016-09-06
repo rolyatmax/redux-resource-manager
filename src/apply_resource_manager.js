@@ -1,6 +1,5 @@
 import { combineReducers } from 'redux';
-import { debounce } from 'underscore'; // TODO: implement this in utils
-
+import debounce from './utils/debounce';
 import fetchJSON from './utils/fetch_json';
 import mapObject from './utils/map_object';
 import identity from './utils/identity';
