@@ -2,6 +2,10 @@ const now = Date.now || function _now() {
   return new Date().getTime();
 };
 
+/*
+ * Adapted from underscore.js 1.8.3
+ * "immediate" logic here is for covering edge cases
+ */
 export default function debounce(fn, wait, immediate) {
   let timeout;
   let args;
