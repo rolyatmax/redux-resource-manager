@@ -223,7 +223,7 @@ function createResourceReducer(resourceConfig) {
             status: 'rejected',
             retry: retry,
             expiration: Date.now() + ttl,
-            error: 'Fetch error', // bad default message????
+            error: action.error,
           };
         });
         return { ...state, ...cacheToUpdate };
