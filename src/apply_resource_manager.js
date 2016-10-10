@@ -5,9 +5,9 @@ import mapObject from './utils/map_object';
 import identity from './utils/identity';
 
 
-const RESOURCE_FETCH = 'RESOURCE_FETCH';
-const RESOURCE_RECEIVED = 'RESOURCE_RECEIVED';
-const RESOURCE_ERROR = 'RESOURCE_ERROR';
+export const RESOURCE_FETCH = 'RESOURCE_FETCH';
+export const RESOURCE_RECEIVED = 'RESOURCE_RECEIVED';
+export const RESOURCE_ERROR = 'RESOURCE_ERROR';
 
 const userState = '__userState';
 const resourceManagerState = '__resourceManagerState';
