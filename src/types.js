@@ -3,11 +3,10 @@ export type ResourceResponse = {}
 export type ResourceState = {[cacheKey: string]: Resource}
 export type ResourceManagerState = {[key: string]: ResourceState }
 
-export type ResourceHandlers = {
-    onFetch: (params: RequestParams) => void,
-    onReceived: (params: RequestParams, data: any) => void,
-    onError: (params: RequestParams, error: Error) => void,
-    getState: (key: string) => ResourceManagerState,
+export type ResourceEventHandlers = {
+    onFetch?: (params: RequestParams) => void,
+    onReceived?: (params: RequestParams, data: any) => void,
+    onError?: (params: RequestParams, error: Error) => void,
 }
 
 export type BaseResource = {
@@ -19,6 +18,8 @@ export type BaseResource = {
     unbatchResponse: any,
 }
 
+export type ResourceConfig = BaseResource
+
 export type ResourceMap = {[resourceName: string]: BaseResource }
 export type ResourceGetter = (request: RequestParams) => ResourceResponse
 export type ResourceManager = {[resourceName: string]: ResourceGetter}
@@ -28,6 +29,21 @@ export type FetchOptions = {}
 export const RESOURCE_FETCH = 'redux-resource-manager/RESOURCE_FETCH';
 export const RESOURCE_RECEIVED = 'redux-resource-manager/RESOURCE_RECEIVED';
 export const RESOURCE_ERROR = 'redux-resource-manager/RESOURCE_ERROR';
+
+export const actions = {
+  resourceFetch({ resourceName, request }) {
+    const type = RESOURCE_FETCH;
+    return { type, resourceName, request };
+  },
+  resourceReceived({ resourceName, request, duration }, response) {
+    const type = RESOURCE_RECEIVED;
+    return { type, resourceName, request, response, duration };
+  },
+  resourceError({ resourceName, request, duration }, error, retry) {
+    const type = RESOURCE_ERROR;
+    return { type, resourceName, request, error, duration, retry };
+  },
+};
 
 export type FetchAction = { type: RESOURCE_FETCH, params: RequestParams }
 export type ReceivedAction = { type: RESOURCE_RECEIVED, params: RequestParams, data: any }
@@ -51,3 +67,8 @@ export type RejectedResource = {
     expiration: number,
 }
 export type Resource = PendingResource | FulfilledResource | RejectedResource
+
+export type Store = {
+    getState: () => Object,
+    dispatch: (action: any) => void
+}

@@ -3,22 +3,28 @@ import mapObject from './utils/map_object';
 import identity from './utils/identity';
 import { fetchResource } from './fetch_resource';
 import getUrlAndFetchOptions from './get_url_and_fetch_options';
-
-import { pending, ResourceMap, ResourceHandlers, ResourceManager } from './types';
+import { pending, ResourceMap, ResourceEventHandlers, ResourceManager } from './types';
+import { createResourceStore } from './create_store';
+import { buildManager } from './react_bindings';
 
 const pendingState = { status: pending };
 
+// TODO: allow passing in own store?
 export function createResourceManager(
     baseConfig: ResourceMap,
-    eventHandlers: ResourceHandlers):ResourceManager {
+    eventHandlers: ResourceEventHandlers
+):ResourceManager {
   const resourceConfigs = applyDefaults(baseConfig);
+  const store = createResourceStore(resourceConfigs, eventHandlers);
 
   const getResources = mapObject(
-    resourceConfigs,
-    (config) => createResourceGetter(config, eventHandlers)
+      resourceConfigs,
+      (config) => createResourceGetter(config, store)
   );
 
-  return getResources;
+  const manager = buildManager(getResources);
+
+  return { manager };
 }
 
 function applyDefaults(definitions) {
@@ -37,14 +43,14 @@ function createDefaultCacheKey(resourceConfig) {
   };
 }
 
-function createResourceGetter(resourceConfig, handlers) {
+function createResourceGetter(resourceConfig, store) {
   const { createCacheKey, resourceName } = resourceConfig;
 
   return (params) => {
-    const state = handlers.getState(resourceName);
+    const state = store.getState()[resourceName];
     const key = createCacheKey(params);
     if (!state[key] || Date.now() > state[key].expiration) {
-      fetchResource(resourceConfig, params, handlers);
+      fetchResource(resourceConfig, params, store.dispatch);
     }
     return state[key] || pendingState;
   };
