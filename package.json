@@ -8,16 +8,12 @@
     "url": "git+https://github.com/rolyatmax/redux-resource-manager.git"
   },
   "scripts": {
-    "clean": "rimraf lib demo/bundle*",
+    "clean": "rimraf lib",
     "check:src": "npm run lint && npm run test",
-    "build": "babel src -d lib",
+    "build": "rollup -c",
     "watch": "npm run build -- -w",
     "test": "babel test.js | node | faucet",
-    "lint": "eslint .",
-    "build:demo": "webpack",
-    "develop:demo": "open http://localhost:8080 && webpack-dev-server --hot --inline",
-    "batching-server": "node demo/batching_server.js",
-    "serve:demo": "cd demo && open http://localhost:36418 && python -m SimpleHTTPServer 36418",
+    "lint": "eslint ./src",
     "prepublish": "npm run clean && npm run build && npm run check:src"
   },
   "files": [
@@ -27,14 +23,13 @@
   "bugs": {
     "url": "https://github.com/rolyatmax/redux-resource-manager/issues"
   },
-  "homepage": "http://redux.js.org",
+  "homepage": "https://github.com/rolyatmax/redux-resource-manager",
   "author": "Taylor Baldwin <taylorbaldwin@gmail.com> (https://tbaldw.in)",
   "license": "MIT",
   "devDependencies": {
-    "babel-cli": "^6.10.1",
     "babel-core": "^6.10.4",
     "babel-eslint": "^6.1.2",
-    "babel-loader": "^6.2.4",
+    "babel-plugin-external-helpers": "^6.8.0",
     "babel-plugin-transform-flow-strip-types": "^6.8.0",
     "babel-plugin-transform-object-rest-spread": "^6.8.0",
     "babel-polyfill": "^6.9.1",
@@ -45,19 +40,10 @@
     "eslint-plugin-import": "^1.10.3",
     "eslint-plugin-react": "^5.2.2",
     "faucet": "0.0.1",
-    "flow-bin": "^0.29.0",
-    "isomorphic-fetch": "^2.2.1",
-    "react-dom": "^15.2.1",
-    "react-redux": "^4.4.5",
-    "redux-logger": "^2.6.1",
-    "request": "^2.73.0",
+    "flow-bin": "^0.23.0",
     "rimraf": "^2.5.3",
-    "tape": "^4.6.0",
-    "webpack": "^1.13.1",
-    "webpack-dev-server": "^1.14.1"
-  },
-  "dependencies": {
-    "react": "^15.2.1",
-    "redux": "^3.5.2"
+    "rollup": "^0.36.3",
+    "rollup-plugin-babel": "^2.6.1",
+    "tape": "^4.6.0"
   }
 }

@@ -1,8 +1,11 @@
-import { combineReducers } from 'redux';
 import debounce from './utils/debounce';
 import fetchJSON from './utils/fetch_json';
 import mapObject from './utils/map_object';
 import identity from './utils/identity';
+
+function combineReducers() {
+  throw new Error('not implemented');
+}
 
 
 const RESOURCE_FETCH = 'RESOURCE_FETCH';
