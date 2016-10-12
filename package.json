@@ -11,8 +11,7 @@
     "clean": "rimraf lib",
     "check:src": "npm run lint && npm run test",
     "build": "rollup -c",
-    "watch": "npm run build -- -w",
-    "test": "babel test.js | node | faucet",
+    "test": "npm run build &&  node test.js | faucet",
     "lint": "eslint ./src",
     "prepublish": "npm run clean && npm run build && npm run check:src"
   },

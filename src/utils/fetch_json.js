@@ -1,11 +1,14 @@
+/* @flow */
+
 class FetchError extends Error {
+  statusCode: number;
   constructor(msg, statusCode) {
     super(msg);
     this.statusCode = statusCode;
   }
 }
 
-export default function fetchJSON(url, options = {}) {
+export default function fetchJSON(url: string, options: Object = {}) {
   const requestOptions = {
     credentials: 'same-origin',
     ...options,

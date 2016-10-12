@@ -1,11 +1,7 @@
-import test from 'tape'; // eslint-disable-line
-// import applyResourceManager from './lib';
-import identity from './lib/utils/identity';
-// import mapObject from './lib/utils/map_object';
+const test = require('tape');
+const { createResourceManager } = require('./lib/index');
 
-
-test('identity should return exactly what is passed to it', (t) => {
-  const val = 12345;
-  t.equal(val, identity(val));
+test('createResourceManager exists', (t) => {
+  t.ok(createResourceManager);
   t.end();
 });
