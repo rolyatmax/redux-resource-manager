@@ -1,13 +1,11 @@
 /* @flow */
 import { createStore } from './create_store';
 import { applyDefaults } from './resource_config';
-import type { // eslint-disable-line no-duplicate-imports
-    BaseResourceConfigMap,
-} from './resource_config';
+import type { BaseResourceConfigMap } from './resource_config';
 import { createSelectorMap } from './create_selector';
 import type { ResourceEventHandlers } from './external_handlers';
 import { createManager } from './manager_component';
-import type { Manager } from './manager_component';  // eslint-disable-line no-duplicate-imports
+import type { Manager } from './manager_component';
 
 // TODO: allow passing in own store?
 export function createResourceManager(
@@ -20,5 +18,5 @@ export function createResourceManager(
   const getResources = createSelectorMap(resourceConfigs, store);
   const manager = createManager(getResources);
 
-  return { manager };
+  return { manager, getResources };
 }

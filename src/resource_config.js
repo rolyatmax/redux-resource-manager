@@ -2,7 +2,7 @@
 import mapObject from './utils/map_object';
 import identity from './utils/identity';
 import { getUrlAndFetchOptions } from './url_options';
-import type { URLOptions } from './url_options';
+import type { URLOptions } from './url_options'; // eslint-disable-line no-duplicate-imports
 
 type BaseResourceConfig = {
     buildUrl: (params: Object) => string | URLOptions,

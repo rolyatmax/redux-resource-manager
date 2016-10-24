@@ -11,7 +11,8 @@
     "clean": "rimraf lib",
     "build": "rollup -c",
     "tape": "node test.js | faucet",
-    "test": "npm run build && npm run tape",
+    "flow": "flow check",
+    "test": "npm run lint && npm run flow && npm run build && npm run tape",
     "lint": "eslint ./src",
     "prepublish": "npm run clean && npm run build && npm run lint && npm run tape"
   },
@@ -25,7 +26,7 @@
   "homepage": "https://github.com/rolyatmax/redux-resource-manager",
   "authors": [
     "Taylor Baldwin <taylorbaldwin@gmail.com> (https://tbaldw.in)",
-    "Justin Falcone <justin.falcone@buzzfeed.com>"  
+    "Justin Falcone <justin.falcone@buzzfeed.com>"
   ],
   "license": "MIT",
   "devDependencies": {
@@ -48,8 +49,8 @@
     "rollup-plugin-babel": "^2.6.1",
     "tape": "^4.6.0"
   },
-  "dependencies": {
-    "react": "^15.3.2",
-    "redux": "^3.6.0"
+  "peerDependencies": {
+    "react": "15.x",
+    "redux": "3.x"
   }
 }

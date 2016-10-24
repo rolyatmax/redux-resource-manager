@@ -2,9 +2,9 @@
 import { combineReducers } from 'redux';
 import mapObject from './utils/map_object';
 import { createPending, createFulfilled, createRejected } from './resource';
-import type { Resource } from './resource'; // eslint-disable-line no-duplicate-imports
+import type { Resource } from './resource';
 import { RESOURCE_FETCH, RESOURCE_RECEIVED, RESOURCE_ERROR } from './action';
-import type { Action } from './action'; // eslint-disable-line no-duplicate-imports
+import type { Action } from './action';
 import type { ResourceConfig, ResourceConfigMap } from './resource_config';
 
 type ResourceState = {[cacheKey: string]: Resource}

@@ -11,7 +11,8 @@
     "no-use-before-define": "off",
     "object-shorthand": "off",
     "prefer-arrow-callback": "off",
-    "indent": ["error", 2]
+    "indent": ["error", 2],
+    "no-duplicate-imports": "off"
   },
   "env": {
       "browser": true

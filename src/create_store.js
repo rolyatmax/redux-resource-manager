@@ -2,9 +2,7 @@
 import { createStore as createReduxStore } from 'redux';
 import { createReducer } from './create_reducer';
 import { createMiddleware } from './external_handlers';
-import type { // eslint-disable-line no-duplicate-imports
-    ResourceEventHandlers,
-} from './external_handlers';
+import type { ResourceEventHandlers } from './external_handlers';
 import type { ResourceConfigMap } from './resource_config';
 
 type Store = {

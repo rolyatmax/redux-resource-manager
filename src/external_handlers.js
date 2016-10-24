@@ -1,7 +1,6 @@
 /* @flow */
 import { RESOURCE_FETCH, RESOURCE_RECEIVED, RESOURCE_ERROR } from './action';
-import type { Request, Action } from './action'; // eslint-disable-line no-duplicate-imports
-
+import type { Request, Action } from './action';
 export type ResourceEventHandlers = {
     onFetch?: (request: Request) => void,
     onReceived?: (request: Request, response: any) => void,
