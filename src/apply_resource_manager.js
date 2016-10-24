@@ -1,12 +1,8 @@
+import { combineReducers } from 'redux';
 import debounce from './utils/debounce';
 import fetchJSON from './utils/fetch_json';
 import mapObject from './utils/map_object';
 import identity from './utils/identity';
-
-function combineReducers() {
-  throw new Error('not implemented');
-}
-
 
 const RESOURCE_FETCH = 'RESOURCE_FETCH';
 const RESOURCE_RECEIVED = 'RESOURCE_RECEIVED';
@@ -176,62 +172,62 @@ function createResourceReducer(resourceConfig) {
     const cacheToUpdate = {};
     let paramsList;
     switch (action.type) {
-      case RESOURCE_FETCH:
-        paramsList = buildBatches ? action.request : [action.request];
-        paramsList.forEach(({ params }) => {
-          cacheToUpdate[createCacheKey(params)] = { status: 'pending' };
-        });
-        return { ...state, ...cacheToUpdate };
+    case RESOURCE_FETCH:
+      paramsList = buildBatches ? action.request : [action.request];
+      paramsList.forEach(({ params }) => {
+        cacheToUpdate[createCacheKey(params)] = { status: 'pending' };
+      });
+      return { ...state, ...cacheToUpdate };
 
-      case RESOURCE_RECEIVED: {
-        if (!buildBatches) {
-          cacheToUpdate[createCacheKey(action.request.params)] = {
-            result: parseResponse(action.response),
-            status: 'fulfilled',
-            expiration: Date.now() + ttl,
-          };
-          return { ...state, ...cacheToUpdate };
-        }
-
-        const batchedParams = action.request.map(({ params }) => params);
-        const { fulfilled, rejected } = unbatchResponse(batchedParams, action.response);
-
-        rejected.forEach(({ params, error }) => {
-          // FIXME: this seems so dangerous - all to avoid letting the user have access to
-          // retry function in the `unbatchResponse` function
-          const { retry } = action.request.find(reqInfo => reqInfo.params === params);
-          if (!retry) throw new Error('Could not map params back to retry function');
-          cacheToUpdate[createCacheKey(params)] = {
-            status: 'rejected',
-            retry: retry,
-            error: error,
-            expiration: Date.now() + ttl,
-          };
-        });
-
-        fulfilled.forEach(({ params, result }) => {
-          cacheToUpdate[createCacheKey(params)] = {
-            result: result,
-            status: 'fulfilled',
-            expiration: Date.now() + ttl,
-          };
-        });
-
+    case RESOURCE_RECEIVED: {
+      if (!buildBatches) {
+        cacheToUpdate[createCacheKey(action.request.params)] = {
+          result: parseResponse(action.response),
+          status: 'fulfilled',
+          expiration: Date.now() + ttl,
+        };
         return { ...state, ...cacheToUpdate };
       }
-      case RESOURCE_ERROR:
-        paramsList = buildBatches ? action.request : [action.request];
-        paramsList.forEach(({ params, retry }) => {
-          cacheToUpdate[createCacheKey(params)] = {
-            status: 'rejected',
-            retry: retry,
-            expiration: Date.now() + ttl,
-            error: action.error,
-          };
-        });
-        return { ...state, ...cacheToUpdate };
-      default:
-        return state;
+
+      const batchedParams = action.request.map(({ params }) => params);
+      const { fulfilled, rejected } = unbatchResponse(batchedParams, action.response);
+
+      rejected.forEach(({ params, error }) => {
+          // FIXME: this seems so dangerous - all to avoid letting the user have access to
+          // retry function in the `unbatchResponse` function
+        const { retry } = action.request.find(reqInfo => reqInfo.params === params);
+        if (!retry) throw new Error('Could not map params back to retry function');
+        cacheToUpdate[createCacheKey(params)] = {
+          status: 'rejected',
+          retry: retry,
+          error: error,
+          expiration: Date.now() + ttl,
+        };
+      });
+
+      fulfilled.forEach(({ params, result }) => {
+        cacheToUpdate[createCacheKey(params)] = {
+          result: result,
+          status: 'fulfilled',
+          expiration: Date.now() + ttl,
+        };
+      });
+
+      return { ...state, ...cacheToUpdate };
+    }
+    case RESOURCE_ERROR:
+      paramsList = buildBatches ? action.request : [action.request];
+      paramsList.forEach(({ params, retry }) => {
+        cacheToUpdate[createCacheKey(params)] = {
+          status: 'rejected',
+          retry: retry,
+          expiration: Date.now() + ttl,
+          error: action.error,
+        };
+      });
+      return { ...state, ...cacheToUpdate };
+    default:
+      return state;
     }
   };
 }

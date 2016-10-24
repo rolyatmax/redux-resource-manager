@@ -9,11 +9,11 @@
   },
   "scripts": {
     "clean": "rimraf lib",
-    "check:src": "npm run lint && npm run test",
     "build": "rollup -c",
-    "test": "npm run build &&  node test.js | faucet",
+    "tape": "node test.js | faucet",
+    "test": "npm run build && npm run tape",
     "lint": "eslint ./src",
-    "prepublish": "npm run clean && npm run build && npm run check:src"
+    "prepublish": "npm run clean && npm run build && npm run lint && npm run tape"
   },
   "files": [
     "lib",
@@ -23,7 +23,10 @@
     "url": "https://github.com/rolyatmax/redux-resource-manager/issues"
   },
   "homepage": "https://github.com/rolyatmax/redux-resource-manager",
-  "author": "Taylor Baldwin <taylorbaldwin@gmail.com> (https://tbaldw.in)",
+  "authors": [
+    "Taylor Baldwin <taylorbaldwin@gmail.com> (https://tbaldw.in)",
+    "Justin Falcone <justin.falcone@buzzfeed.com>"  
+  ],
   "license": "MIT",
   "devDependencies": {
     "babel-core": "^6.10.4",
