@@ -1,5 +1,5 @@
 /* @flow */
-import { createStore as createReduxStore } from 'redux';
+import { createStore as createReduxStore, applyMiddleware } from 'redux';
 import { createReducer } from './create_reducer';
 import { createMiddleware } from './external_handlers';
 import type { ResourceEventHandlers } from './external_handlers';
@@ -12,9 +12,9 @@ type Store = {
 
 export function createStore(
     resourceConfigs: ResourceConfigMap,
-    handlers: ResourceEventHandlers):Store {
-  const reducer = createReducer(resourceConfigs);
-  const middleware = createMiddleware(handlers);
+    handlers: ResourceEventHandlers = {}):Store {
+    const reducer = createReducer(resourceConfigs);
+    const middleware = createMiddleware(handlers);
 
-  return createReduxStore(reducer, middleware);
+    return createReduxStore(reducer, applyMiddleware(middleware));
 }

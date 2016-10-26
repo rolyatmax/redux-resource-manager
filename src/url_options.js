@@ -14,14 +14,14 @@ export function getUrlAndFetchOptions(
     resourceConfig: ConfigInterface,
     params: {},
 ):URLOptions {
-  const { buildUrl } = resourceConfig;
-  const buildUrlResult = buildUrl(params);
-  if (typeof buildUrlResult === 'string') {
-    return {
-      url: buildUrlResult,
-      fetchOptions: {},
-    };
-  }
-  const { url, ...fetchOptions } = buildUrlResult;
-  return { url, fetchOptions };
+    const { buildUrl } = resourceConfig;
+    const buildUrlResult = buildUrl(params);
+    if (typeof buildUrlResult === 'string') {
+        return {
+            url: buildUrlResult,
+            fetchOptions: {},
+        };
+    }
+    const { url, ...fetchOptions } = buildUrlResult;
+    return { url, fetchOptions };
 }

@@ -31,7 +31,7 @@ type RequestParams = { resourceName: string, request: Request }
 export function resourceFetch(
     { resourceName, request }:RequestParams
 ):FetchAction {
-  return { type: RESOURCE_FETCH, resourceName, request };
+    return { type: RESOURCE_FETCH, resourceName, request };
 }
 
 export function resourceReceived(
@@ -39,7 +39,7 @@ export function resourceReceived(
     duration: number,
     response: any
 ):ReceivedAction {
-  return { type: RESOURCE_RECEIVED, resourceName, request, response, duration };
+    return { type: RESOURCE_RECEIVED, resourceName, request, response, duration };
 }
 
 export function resourceError(
@@ -47,5 +47,5 @@ export function resourceError(
     duration: number,
     error: Error
 ):ErrorAction {
-  return { type: RESOURCE_ERROR, resourceName, request, error, duration };
+    return { type: RESOURCE_ERROR, resourceName, request, error, duration };
 }

@@ -12,6 +12,7 @@
     "build": "rollup -c",
     "tape": "node test.js | faucet",
     "flow": "flow check",
+    "test-only": "npm run build && node test.js",
     "test": "npm run lint && npm run flow && npm run build && npm run tape",
     "lint": "eslint ./src",
     "prepublish": "npm run clean && npm run build && npm run lint && npm run tape"

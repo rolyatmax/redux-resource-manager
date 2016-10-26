@@ -7,76 +7,75 @@ import type { Action } from './action';
 import type { ResourceConfig } from './resource_config';
 
 export function createResourceFetcher(
-    store:{dispatch: (action:Action) => void },
-    fetcherParams:{buffer?: number} = {}
-) {
-  const {
-      buffer = 50,
-  } = fetcherParams;
-  const { dispatch } = store;
-  const queue = {};
+    resourceConfig: ResourceConfig,
+    store:{dispatch: (action:Action) => void }
+):(params: Object) => void {
+    const {
+        resourceName,
+        batchBuffer = 50,
+    } = resourceConfig;
 
-  const fetchInBatch = debounce((resourceConfig, buildBatches) => {
-    const { resourceName } = resourceConfig;
+    const { dispatch } = store;
+    const queue = {};
 
-    const batches = buildBatches(queue[resourceName].slice());
-    batches.forEach((batch) => {
-      const request = batch.map((params) => {
-        const retry = () => fetchResource(resourceConfig, params);
-        return { params, retry };
-      });
+    const fetchInBatch = debounce((buildBatches) => {
+        const batches = buildBatches(queue[resourceName].slice());
+        batches.forEach((batch) => {
+            const request = batch.map((params) => {
+                const retry = () => fetchResource(params);
+                return { params, retry };
+            });
 
-      sendRequest(resourceConfig, batch, request);
-    });
-    queue[resourceName] = [];
-  }, buffer);
+            sendRequest(batch, request);
+        });
+        queue[resourceName] = [];
+    }, batchBuffer);
 
 
-  function sendRequest(resourceConfig, params, request) {
-    const { resourceName } = resourceConfig;
-    const { url, fetchOptions } = getUrlAndFetchOptions(resourceConfig, params);
-    const startTime = getTimer();
-    const requestParams = { resourceName, request };
+    function sendRequest(params, request) {
+        const { url, fetchOptions } = getUrlAndFetchOptions(resourceConfig, params);
+        const startTime = getTimer();
+        const requestParams = { resourceName, request };
 
-    function success(response) {
-      const duration = getDuration(startTime);
-      dispatch(resourceReceived(requestParams, duration, response));
+        function success(response) {
+            const duration = getDuration(startTime);
+            dispatch(resourceReceived(requestParams, duration, response));
+        }
+
+        function fail(error) {
+            const duration = getDuration(startTime);
+            console.error(`redux-resource-manager error from ${resourceName}:`, error);
+
+            dispatch(resourceError(requestParams, duration, error));
+        }
+
+        fetchJSON(url, fetchOptions).then(success, fail);
+        dispatch(resourceFetch(requestParams));
     }
 
-    function fail(error) {
-      const duration = getDuration(startTime);
-      console.error(`redux-resource-manager error from ${resourceName}:`, error);
-
-      dispatch(resourceError(requestParams, duration, error));
+    function fetchResource(params: Object):void {
+        const { buildBatches } = resourceConfig;
+        if (buildBatches) {
+            queue[resourceName] = queue[resourceName] || [];
+            queue[resourceName].push(params);
+            fetchInBatch(buildBatches);
+        } else {
+            const request = {
+                params,
+                retry: () => fetchResource(params),
+            };
+            sendRequest(params, request);
+        }
     }
 
-    fetchJSON(url, fetchOptions).then(success, fail);
-    dispatch(resourceFetch(requestParams));
-  }
-
-  function fetchResource(resourceConfig:ResourceConfig, params: Object):void {
-    const { buildBatches, resourceName } = resourceConfig;
-    if (buildBatches) {
-      queue[resourceName] = queue[resourceName] || [];
-      queue[resourceName].push(params);
-      fetchInBatch(resourceConfig, buildBatches);
-    } else {
-      const request = {
-        params,
-        retry: () => fetchResource(resourceConfig, params),
-      };
-      sendRequest(resourceConfig, params, request);
-    }
-  }
-
-  return fetchResource;
+    return fetchResource;
 }
 
 
 function getTimer() {
-  return Math.round(window.performance.now());
+    return Math.round(window.performance.now());
 }
 
 function getDuration(startTime) {
-  return getTimer() - startTime;
+    return getTimer() - startTime;
 }

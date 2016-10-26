@@ -18,22 +18,22 @@ type RejectedResource = {
 export type Resource = PendingResource | FulfilledResource | RejectedResource
 
 export function createPending():PendingResource {
-  return { status: pending };
+    return { status: pending };
 }
 
 export function createFulfilled(result:any, ttl:number):FulfilledResource {
-  return {
-    result: result,
-    status: fulfilled,
-    expiration: Date.now() + ttl,
-  };
+    return {
+        result: result,
+        status: fulfilled,
+        expiration: Date.now() + ttl,
+    };
 }
 
 export function createRejected(error: Error, ttl: number, retry: () => void):RejectedResource {
-  return {
-    status: rejected,
-    retry,
-    expiration: Date.now() + ttl,
-    error,
-  };
+    return {
+        status: rejected,
+        retry,
+        expiration: Date.now() + ttl,
+        error,
+    };
 }

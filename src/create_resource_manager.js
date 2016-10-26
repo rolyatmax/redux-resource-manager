@@ -12,11 +12,10 @@ export function createResourceManager(
     baseConfig: BaseResourceConfigMap,
     eventHandlers: ResourceEventHandlers
 ):{ manager: Manager } {
-  const resourceConfigs = applyDefaults(baseConfig);
-  const store = createStore(resourceConfigs, eventHandlers);
+    const resourceConfigs = applyDefaults(baseConfig);
+    const store = createStore(resourceConfigs, eventHandlers);
+    const getResources = createSelectorMap(resourceConfigs, store);
+    const manager = createManager(getResources);
 
-  const getResources = createSelectorMap(resourceConfigs, store);
-  const manager = createManager(getResources);
-
-  return { manager, getResources };
+    return { manager, getResources };
 }

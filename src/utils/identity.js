@@ -1,7 +1,7 @@
 /* @flow */
 
 function identity <T>(val: T): T {
-  return val;
+    return val;
 }
 
 export default identity;
